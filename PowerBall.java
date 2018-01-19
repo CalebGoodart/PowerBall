@@ -102,9 +102,9 @@ public class PowerBall extends JavaPlugin implements Listener{
         Player player = event.getPlayer();
 
         if ((event.getAction() == Action.LEFT_CLICK_AIR) && config.getBoolean("PlayerDash")) {
-            Vector a =new Vector(player.getLocation().getDirection().normalize().getZ(), player.getVelocity().getY(), player.getLocation().getDirection().normalize().getX());
-            Vector b = player.getLocation().getDirection().normalize().crossProduct(a).normalize();
-            player.setVelocity(b);
+            Vector a =new Vector(player.getLocation().getDirection().getX(), player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ());
+            Vector b = new Vector(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+            player.setVelocity(a.multiply(b));
         }
     }
 
