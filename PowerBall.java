@@ -48,10 +48,10 @@ public class PowerBall extends JavaPlugin implements Listener{
     public void onPlayerSneaking(PlayerToggleSneakEvent event){
         Player player = event.getPlayer();
 
-        if((config.getBoolean("TrackSneaking")) && (player.isSneaking())) {
+        if(!((config.getBoolean("TrackSneaking"))) && (player.isSneaking())) {
             player.sendMessage("You are Sneaking");
         }
-        if(config.getBoolean("VelocityTracking") && (player.isSneaking())){
+        if(!(config.getBoolean("VelocityTracking")) && (player.isSneaking())){
             player.sendMessage(String.valueOf((player.getVelocity())));
         }
     }//Ends onPlayerSneaking
@@ -83,11 +83,11 @@ public class PowerBall extends JavaPlugin implements Listener{
         final int i = scheduler.scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
-                if (config.getBoolean("VelocityTracking")) {
+                if (!(config.getBoolean("VelocityTracking"))) {
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
 // Try getFallDistance
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && (a.getFrom().getY() > a.getTo().getY()) && (a.getFrom().getY() - 2 > a.getTo().getY()) && config.getBoolean("PlayerBounce")) {
+                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && (player.getFallDistance() > 5) && config.getBoolean("PlayerBounce")) {
                     //Vector a = new Vector(player.getVelocity().getX(), (player.getVelocity().getY()), player.getVelocity().getZ());
                     //Vector b = new Vector(1, -1, 1);
                     Vector c = new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ());
@@ -101,10 +101,10 @@ public class PowerBall extends JavaPlugin implements Listener{
     public void playerDash(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        if ((event.getAction() == Action.LEFT_CLICK_AIR) && config.getBoolean("PlayerDash")) {
+        if ((event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.SNOW_BALL) && config.getBoolean("PlayerDash")) {
             Vector a =new Vector(player.getLocation().getDirection().getX(), player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ());
-            Vector b = new Vector(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
-            player.setVelocity(a.multiply(b));
+            Vector b = new Vector(a.getX(), 1, a.getZ() );
+            player.setVelocity(b);
         }
     }
 
