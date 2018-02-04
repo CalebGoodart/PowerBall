@@ -15,9 +15,15 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PowerBall extends JavaPlugin implements Listener{
 
     private FileConfiguration config = getConfig();
+    private  double dashcooldownstart = 0;
+    private  double dashcooldown = 0;
+    private  double dashendtime = 0;
 
     @Override
     public void onEnable() {
@@ -41,7 +47,7 @@ public class PowerBall extends JavaPlugin implements Listener{
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        event.setJoinMessage("Welcome, " + player.getName() + "!");
+        event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
     }//Ends onPlayerJoin
 
     @EventHandler
@@ -86,25 +92,34 @@ public class PowerBall extends JavaPlugin implements Listener{
                 if (!(config.getBoolean("VelocityTracking"))) {
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
-// Try getFallDistance
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && (player.getFallDistance() > 5) && config.getBoolean("PlayerBounce")) {
-                    //Vector a = new Vector(player.getVelocity().getX(), (player.getVelocity().getY()), player.getVelocity().getZ());
-                    //Vector b = new Vector(1, -1, 1);
+
+                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && (a.getFrom().getY() - a.getTo().getY() > .6 ) && config.getBoolean("PlayerBounce")) {
                     Vector c = new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
             }
-        }, 20L);
+        }, 5L);
     }// End of playerBounce
 
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
+        final PlayerInteractEvent a = event;
 
-        if ((event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.SNOW_BALL) && config.getBoolean("PlayerDash")) {
-            Vector a =new Vector(player.getLocation().getDirection().getX(), player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ());
-            Vector b = new Vector(a.getX(), 1, a.getZ() );
-            player.setVelocity(b);
+        Timer coodown = new Timer();
+        coodown.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                if ( (!(player.isOnGround())) && (a.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.SNOW_BALL) && config.getBoolean("PlayerDash")) {
+                    Vector a =new Vector(player.getLocation().getDirection().getX() * 3, player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ() * 3 );
+                    player.setVelocity(a);
+                }
+            }
+        }, 3000);
+
+        PlayerInteractEvent cooldown = new PlayerInteractEvent(){
+
         }
     }
 
