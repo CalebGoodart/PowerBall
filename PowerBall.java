@@ -93,7 +93,7 @@ public class PowerBall extends JavaPlugin implements Listener{
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
 
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && (a.getFrom().getY() - a.getTo().getY() > .6 ) && config.getBoolean("PlayerBounce")) {
+                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && (a.getFrom().getY() - a.getTo().getY() > .6 ) && config.getBoolean("PlayerBounce")) {
                     Vector c = new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
