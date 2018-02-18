@@ -2,6 +2,7 @@ package me.fdz.powerball;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,20 +11,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
+import org.bukkit.material.Mushroom;
 import  org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PowerBall extends JavaPlugin implements Listener{
 
     private FileConfiguration config = getConfig();
-    private  double dashcooldownstart = 0;
-    private  double dashcooldown = 0;
-    private  double dashendtime = 0;
 
     @Override
     public void onEnable() {
@@ -66,7 +66,7 @@ public class PowerBall extends JavaPlugin implements Listener{
     public void playerLaunch(PlayerToggleSneakEvent event){
         Player player = event.getPlayer();
 
-        if( player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.CLAY) && config.getBoolean("PlayerLaunch")){
+        if( player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.HUGE_MUSHROOM_1) && config.getBoolean("PlayerLaunch")){
             player.setVelocity(new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ()));
         }
     }//End of playerLaunch
@@ -85,16 +85,14 @@ public class PowerBall extends JavaPlugin implements Listener{
         final Player player = event.getPlayer();
         final PlayerMoveEvent a = event;
 
-        BukkitScheduler scheduler = getServer().getScheduler();
-        final int i = scheduler.scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             public void run() {
                 if (!(config.getBoolean("VelocityTracking"))) {
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
 
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && (a.getFrom().getY() - a.getTo().getY() > .6 ) && config.getBoolean("PlayerBounce")) {
-                    Vector c = new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ());
+                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.HUGE_MUSHROOM_1) && (a.getFrom().getY() - a.getTo().getY() > .6 ) && config.getBoolean("PlayerBounce")) {
+                    Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
             }
@@ -103,24 +101,24 @@ public class PowerBall extends JavaPlugin implements Listener{
 
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
-        final Player player = event.getPlayer();
-        final PlayerInteractEvent a = event;
+        Player player = event.getPlayer();
+        if ( !( playersOnDashCooldown.contains(player) ) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.SNOW_BALL) && config.getBoolean("PlayerDash")) {
 
-        Timer coodown = new Timer();
-        coodown.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                if ( (!(player.isOnGround())) && (a.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.SNOW_BALL) && config.getBoolean("PlayerDash")) {
-                    Vector a =new Vector(player.getLocation().getDirection().getX() * 3, player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ() * 3 );
-                    player.setVelocity(a);
-                }
-            }
-        }, 3000);
-
-        PlayerInteractEvent cooldown = new PlayerInteractEvent(){
-
+            Vector dashSpeed =new Vector(player.getLocation().getDirection().getX() * 3, player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ() * 3 );
+            player.setVelocity(dashSpeed);
+            playersOnDashCooldown.add(player);
+            dashCoolDown(player, 2);
         }
+    }
+     private ArrayList <Player> playersOnDashCooldown = new ArrayList<Player>();
+
+    public void dashCoolDown(final Player player, int seconds){
+
+            this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                public void run() {
+                    playersOnDashCooldown.remove(player);
+                }
+            }, seconds * 20L);
     }
 
     @Override
