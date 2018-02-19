@@ -1,7 +1,6 @@
 package me.fdz.powerball;
 
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.PluginCommand;
