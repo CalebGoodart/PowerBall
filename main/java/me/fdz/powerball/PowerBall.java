@@ -61,7 +61,7 @@ public class PowerBall extends JavaPlugin implements Listener{
             player.sendMessage(String.valueOf((player.getVelocity())));
         }
     }//Ends onPlayerSneaking
-/*
+
     @EventHandler
     public void playerLaunch(PlayerToggleSneakEvent event){
         Player player = event.getPlayer();
@@ -70,7 +70,7 @@ public class PowerBall extends JavaPlugin implements Listener{
             player.setVelocity(new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ()));
         }
     }//End of playerLaunch
-*/
+
     @EventHandler
     public void playerFastFall(PlayerToggleSneakEvent event){
         Player player = event.getPlayer();
@@ -110,9 +110,10 @@ public class PowerBall extends JavaPlugin implements Listener{
             dashCoolDown(player, 2);
         }
     }
-     private ArrayList <Player> playersOnDashCooldown = new ArrayList<Player>();
 
-    public void dashCoolDown(final Player player, int seconds){
+    private ArrayList <Player> playersOnDashCooldown = new ArrayList<Player>();
+
+    private void dashCoolDown(final Player player, int seconds){
 
             this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
                 public void run() {
