@@ -17,14 +17,10 @@ servers:
     motd: '&1Just another BungeeCord - JamCity'
     address: 192.168.0.119:10003
     restricted: false
-  Test:
-    motd: This is in fact a Test - Test
-    address: 23.120.190.140:10004
-    restricted: false
-  McBall:
-    motd: McBall
+  Mcball:
+    motd: 'This is in fact a Test - mcball'
     address: 149.56.12.143
-    restricted:false
+    restricted: false
 timeout: 30000
 player_limit: -1
 listeners:
