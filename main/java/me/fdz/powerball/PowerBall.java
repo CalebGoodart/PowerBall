@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -111,13 +112,13 @@ public class PowerBall extends JavaPlugin implements Listener{
 
     private ArrayList <Player> playersOnDashCooldown = new ArrayList<Player>();
 
-    private void dashCoolDown(final Player player, int seconds){
+    private void dashCoolDown(final Player player, int seconds) {
 
-            this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                public void run() {
-                    playersOnDashCooldown.remove(player);
-                }
-            }, seconds * 20L);
+        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            public void run() {
+                playersOnDashCooldown.remove(player);
+            }
+        }, seconds * 20L);
     }
 
     @Override
