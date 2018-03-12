@@ -1,0 +1,20 @@
+{
+  "minecraft:recipes/building_blocks/snow": {
+    "criteria": {
+      "has_snowball": "2018-03-12 11:10:33 -0500"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/snow_layer": {
+    "criteria": {
+      "has_snowball": "2018-03-12 11:10:33 -0500"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "ocean": "2018-03-12 11:10:11 -0500"
+    },
+    "done": false
+  }
+}
