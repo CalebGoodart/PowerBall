@@ -1,3 +1,8 @@
 name: PowerBall
 version: 1.0.0
 main: me.fdz.powerball.PowerBall
+
+commands:
+   startgame:
+      description: Your description
+      usage: /startgame
