@@ -3,6 +3,9 @@ package me.fdz.powerball;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void onEnable() {
         super.onEnable();
 
+        this.getCommand("startgame").setExecutor(new startGame());
         //Fired when the server enables the plugin
         config.addDefault("TrackSneaking", true);
         config.addDefault("VelocityTracking", true);
@@ -100,7 +106,7 @@ public class PowerBall extends JavaPlugin implements Listener {
         if ((playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
 
 
-        }else{
+        } else {
 
             Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3, player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ() * 3);
             player.setVelocity(dashSpeed);
@@ -138,42 +144,68 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void StartGame() {
 
 
-        CountDown(10);
+        this.getServer().getScheduler().runTask(this, new CountDown(this, 10));
         this.getServer().broadcastMessage("Game is staring!");
 
-        //spawn player and give the flash
+        //spawn player and give flash
 
         //
 
 
     }
 
-    public void snowBallHit(EntityDamageEvent event){
+    public void snowBallHit(EntityDamageEvent event) {
 
 
     }
 
-    public void CountDown(final int count) {
-
-        this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
-
-            int seconds = count;
-
-            public void run() {
-
-                if (seconds == 0) {
-                    return;
-                }
+    public class CountDown implements Runnable {
 
 
-                getServer().broadcastMessage(seconds + " seconds left");
+        private final JavaPlugin plugin;
 
+        private int counter;
 
-                seconds--;
+        public CountDown(JavaPlugin plugin, int counter) {
+            this.plugin = plugin;
+            if (counter < 1) {
+                throw new IllegalArgumentException("counter must be greater than 1");
+            } else {
+                this.counter = counter;
             }
-        }, 0L, 20L);
+        }
+
+
+        public void run() {
+
+            if (counter > 0){
+                plugin.getServer().broadcastMessage(counter + " seconds left");
+                counter--;
+            }
+        }
+    }
+
+    public class startGame implements CommandExecutor {
+
+
+        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            if (sender instanceof Player) {
+                StartGame();
+            }
+
+            // If the player (or console) uses our command correct, we can return true
+            return true;
+        }
+
 
     }
+
+
+
+
+
+
+
 
 
     @Override
