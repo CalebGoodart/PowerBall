@@ -1,0 +1,6 @@
+TrackSneaking: true
+VelocityTracking: true
+PlayerLaunch: true
+PlayerFastFall: true
+PlayerBounce: true
+PlayerDash: true
