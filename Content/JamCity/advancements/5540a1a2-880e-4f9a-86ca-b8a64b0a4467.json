@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "minecraft:recipes/building_blocks/snow": {
     "criteria": {
@@ -18,3 +19,6 @@
     "done": false
   }
 }
+=======
+{}
+>>>>>>> ad96f8e15dc6a3dd0a2ce878914c08176724143a
