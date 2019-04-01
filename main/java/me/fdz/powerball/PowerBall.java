@@ -13,13 +13,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.*;
 
 public class PowerBall extends JavaPlugin implements Listener {
 
@@ -103,10 +100,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if ((playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
-            player.sendMessage("On CoolDown!");
-
-        } else {
+        if (!(playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
 
             Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3,
                     player.getLocation().getDirection().getY(),
@@ -114,18 +108,23 @@ public class PowerBall extends JavaPlugin implements Listener {
             player.setVelocity(dashSpeed);
             playersOnDashCoolDown.add(player);
 
-            this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
-                int Counter = 3;
+            this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                int counter = 3;
 
                 public void run() {
-                    if (Counter < 1) {
+                    if (counter < 1) {
                         playersOnDashCoolDown.remove(player);
+
                     }else{
-                        player.sendMessage(Counter + " Seconds left");
+                        player.sendMessage(counter + " Seconds left");
+                        counter--;
                     }
                 }
-            }, 3 * 20L, 20L);
+            }, 3 * 20L);
 
+        } else {
+
+            player.sendMessage("On CoolDown!");
         }
     }
 
@@ -156,28 +155,28 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     public void StartGame() {
 
-
         this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
 
             int counter = 10;
 
             public void run() {
 
-                if (counter == 0){
+                if (counter <= 0){
+
                     getServer().broadcastMessage("Game starting");
                     return;
+
                 }
                 getServer().broadcastMessage(counter + " Seconds left!");
                 counter--;
             }
-        }, 11 * 20L, 20L);
+        }, 0L, 20L);
 
         this.getServer().broadcastMessage("Game is staring!");
 
         //spawn player and give flash
 
         //
-
 
     }
 
