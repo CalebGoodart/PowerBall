@@ -86,7 +86,7 @@ public class PowerBall extends JavaPlugin implements Listener {
         final Player player = event.getPlayer();
         final PlayerMoveEvent a = event;
 
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+        getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
                 if (!(config.getBoolean("VelocityTracking"))) {
                     player.sendMessage(String.valueOf((player.getVelocity())));
@@ -104,15 +104,17 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerDash(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if ((playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
-
+            player.sendMessage("On CoolDown!");
 
         } else {
 
-            Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3, player.getLocation().getDirection().getY(), player.getLocation().getDirection().getZ() * 3);
+            Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3,
+                    player.getLocation().getDirection().getY(),
+                    player.getLocation().getDirection().getZ() * 3);
             player.setVelocity(dashSpeed);
             playersOnDashCoolDown.add(player);
             coolDown(player, 3);
-            playersOnDashCoolDown.remove(player);
+
         }
     }
 
@@ -120,11 +122,11 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     private void coolDown(final Player player, int seconds) {
 
-        this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
+        this.getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
-
+                playersOnDashCoolDown.remove(player);
             }
-        }, seconds * 20L, 20L);
+        }, seconds * 20L);
     }
 
 
@@ -144,7 +146,21 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void StartGame() {
 
 
-        this.getServer().getScheduler().runTask(this, new CountDown(this, 10));
+        this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
+
+            int counter = 10;
+
+            public void run() {
+
+                if (counter == 0){
+                    getServer().broadcastMessage("Game starting");
+                    return;
+                }
+                getServer().broadcastMessage(counter + " Seconds left!");
+                counter--;
+            }
+        }, 0L, 20L);
+
         this.getServer().broadcastMessage("Game is staring!");
 
         //spawn player and give flash
@@ -156,33 +172,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     public void snowBallHit(EntityDamageEvent event) {
 
-
-    }
-
-    public class CountDown implements Runnable {
-
-
-        private final JavaPlugin plugin;
-
-        private int counter;
-
-        public CountDown(JavaPlugin plugin, int counter) {
-            this.plugin = plugin;
-            if (counter < 1) {
-                throw new IllegalArgumentException("counter must be greater than 1");
-            } else {
-                this.counter = counter;
-            }
-        }
-
-
-        public void run() {
-
-            if (counter > 0){
-                plugin.getServer().broadcastMessage(counter + " seconds left");
-                counter--;
-            }
-        }
+        event.getEntity().sendMessage("HIT");
     }
 
     public class startGame implements CommandExecutor {
