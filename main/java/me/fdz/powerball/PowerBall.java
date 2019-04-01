@@ -102,7 +102,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if ((playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
             player.sendMessage("On CoolDown!");
 
@@ -113,7 +113,18 @@ public class PowerBall extends JavaPlugin implements Listener {
                     player.getLocation().getDirection().getZ() * 3);
             player.setVelocity(dashSpeed);
             playersOnDashCoolDown.add(player);
-            coolDown(player, 3);
+
+            this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
+                int Counter = 3;
+
+                public void run() {
+                    if (Counter < 1) {
+                        playersOnDashCoolDown.remove(player);
+                    }else{
+                        player.sendMessage(Counter + " Seconds left");
+                    }
+                }
+            }, 3 * 20L, 20L);
 
         }
     }
@@ -159,7 +170,7 @@ public class PowerBall extends JavaPlugin implements Listener {
                 getServer().broadcastMessage(counter + " Seconds left!");
                 counter--;
             }
-        }, 0L, 20L);
+        }, 11 * 20L, 20L);
 
         this.getServer().broadcastMessage("Game is staring!");
 
