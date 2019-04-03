@@ -29,7 +29,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
 
 
-    public class MyEvent extends Event{
+    public class MyEvent extends Event {
 
         public Player getPlayer() {
             return player;
@@ -37,14 +37,16 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         Player player;
 
-        public MyEvent(Player player){
+        public MyEvent(Player player) {
 
             this.player = player;
         }
+
         public HandlerList getHandlers() {
             return null;
         }
     }
+
     @Override
     public void onEnable() {
         super.onEnable();
@@ -70,13 +72,11 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
 
-        new BukkitRunnable(){
-
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-
                 Bukkit.getPluginManager().callEvent(new MyEvent(player));
             }
-        }.runTaskTimer(this, 0, 1);
+        }, 0, 1);
 
 
     }//Ends onPlayerJoin
@@ -115,7 +115,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerBounce(MyEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
+        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
             player.sendMessage("on dirt");
             Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
             player.setVelocity(c);
@@ -142,20 +142,19 @@ public class PowerBall extends JavaPlugin implements Listener {
         */
 
 
-
     }// End of playerBounce
 
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.getMaterial("SNOWBALL")){
+        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.ARROW) {
 
-            if (playersOnDashCoolDown.contains(player)){
+            if (playersOnDashCoolDown.contains(player)) {
 
                 player.sendMessage("On CoolDown!");
 
-            }else {
+            } else {
 
                 Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3,
                         player.getLocation().getDirection().getY(),
@@ -163,7 +162,7 @@ public class PowerBall extends JavaPlugin implements Listener {
                 player.setVelocity(dashSpeed);
                 playersOnDashCoolDown.put(player.getUniqueId(), player);
 
-                new BukkitRunnable(){
+                new BukkitRunnable() {
                     public void run() {
                         playersOnDashCoolDown.remove(player.getUniqueId());
                     }
@@ -174,7 +173,7 @@ public class PowerBall extends JavaPlugin implements Listener {
         }
     }
 
-    private Hashtable <UUID, Player> playersOnDashCoolDown = new Hashtable<UUID, Player>();
+    private Hashtable<UUID, Player> playersOnDashCoolDown = new Hashtable<UUID, Player>();
 
     @EventHandler
     public void onPlayerSquat(PlayerToggleSneakEvent event) {
@@ -192,17 +191,18 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void StartGame() {
 
 
-        new BukkitRunnable(){
+        new BukkitRunnable() {
 
             int counter = 10;
+
             public void run() {
 
-                if (counter <= 0){
+                if (counter <= 0) {
 
                     getServer().broadcastMessage("starting game");
                     this.cancel();
 
-                }else {
+                } else {
                     getServer().broadcastMessage(counter + " Seconds left!");
                     counter--;
                 }
@@ -219,7 +219,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     }
 
-    public void giveKit(){
+    public void giveKit() {
 
 
     }
@@ -244,7 +244,6 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
     }
-
 
 
     @Override
