@@ -65,7 +65,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerLaunch(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
 
-        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && config.getBoolean("PlayerLaunch")) {
+        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && config.getBoolean("PlayerLaunch")) {
             player.setVelocity(new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ()));
         }
     }//End of playerLaunch
@@ -86,16 +86,16 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT){
-
             player.sendMessage("on dirt");
+            Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
+            player.setVelocity(c);
         }
 
 
 
 
         if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
-            Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
-            player.setVelocity(c);
+
         }
 
         /*
