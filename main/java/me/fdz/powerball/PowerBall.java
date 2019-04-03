@@ -80,12 +80,11 @@ public class PowerBall extends JavaPlugin implements Listener {
     }//End of playerFastFall
 
     @EventHandler
-    public void playerBounce(PlayerMoveEvent event) {
+    public void playerBounce(PlayerEvent event) {
         Player player = event.getPlayer();
-        PlayerMoveEvent a = event;
 
 
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT){
+        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
             player.sendMessage("on dirt");
             Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
             player.setVelocity(c);
@@ -93,12 +92,12 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
 
-
+/*
         if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
 
         }
 
-        /*
+
         player.sendMessage("moved");
         getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
@@ -209,12 +208,6 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
     }
-
-
-
-
-
-
 
 
 
