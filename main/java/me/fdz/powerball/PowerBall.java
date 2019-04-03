@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.UUID;
+import java.util.logging.Handler;
 
 public class PowerBall extends JavaPlugin implements Listener {
 
@@ -42,8 +43,14 @@ public class PowerBall extends JavaPlugin implements Listener {
             this.player = player;
         }
 
+        private final HandlerList HANDLERS = new HandlerList();
+
         public HandlerList getHandlers() {
-            return null;
+            return HANDLERS;
+        }
+
+        public HandlerList getHandlerList() {
+            return HANDLERS;
         }
     }
 
