@@ -63,14 +63,14 @@ public class PowerBall extends JavaPlugin implements Listener {
             public void run() {
 
                 if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK
-                        && player.getVelocity().getY() < -.7 ) {
+                        && player.getVelocity().getY() < -.1) {
 
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
 
             }
-        }, 0L, 1);
+        }, 0L, 5);
 
 
     }//Ends onPlayerJoin
@@ -194,17 +194,17 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     }
 
-    public void snowBallHit(EntityDamageByEntityEvent event) {
+    public void snowBallHit(ProjectileHitEvent event) {
 
         this.getServer().broadcastMessage("HIT");
-        event.getEntity().sendMessage(event.getDamager().getName() + " " + event.getEntityType().name());
+        event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.getHitEntity().getName());
     }
 
     public class startGame implements CommandExecutor {
 
 
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            
+
                 StartGame();
 
 
