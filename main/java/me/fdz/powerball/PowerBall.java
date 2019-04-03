@@ -18,10 +18,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -64,7 +63,7 @@ public class PowerBall extends JavaPlugin implements Listener {
             public void run() {
 
                 if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK
-                        && player.getVelocity().getY() < -.8 ) {
+                        && player.getVelocity().getY() < -.7 ) {
 
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
@@ -185,9 +184,12 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         for (Player player : this.getServer().getOnlinePlayers()){
 
-            PotionData pot = new PotionData(PotionType.SPEED,true,true);
-            ItemStack stack = new ItemStack(Material.SPLASH_POTION);
-            player.getInventory().setItem(9, stack);
+            ItemStack itemStack = new ItemStack(Material.SPLASH_POTION, 2);
+            PotionMeta potionMeta = (PotionMeta)itemStack.getItemMeta();
+            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SPEED, 10,10, true, true);
+            potionMeta.addCustomEffect(potionEffect, true);
+            itemStack.setItemMeta(potionMeta);
+            player.getInventory().addItem(itemStack);
         }
 
     }
@@ -202,7 +204,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
+            
                 StartGame();
 
 
