@@ -30,30 +30,6 @@ public class PowerBall extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
 
 
-    public class MyEvent extends Event {
-
-        public Player getPlayer() {
-            return player;
-        }
-
-        Player player;
-
-        public MyEvent(Player player) {
-
-            this.player = player;
-        }
-
-        private final HandlerList HANDLERS = new HandlerList();
-
-        public HandlerList getHandlers() {
-            return HANDLERS;
-        }
-
-        public HandlerList getHandlerList() {
-            return HANDLERS;
-        }
-    }
-
     @Override
     public void onEnable() {
         super.onEnable();
@@ -81,7 +57,13 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-                Bukkit.getPluginManager().callEvent(new MyEvent(player));
+
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
+                    player.sendMessage("on dirt");
+                    Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
+                    player.setVelocity(c);
+                }
+                
             }
         }, 0, 1);
 
@@ -119,7 +101,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     }//End of playerFastFall
 
     @EventHandler
-    public void playerBounce(MyEvent event) {
+    public void playerBounce(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
