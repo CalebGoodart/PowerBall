@@ -1,5 +1,6 @@
 package me.fdz.powerball;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
@@ -8,7 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -25,6 +28,23 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     private FileConfiguration config = getConfig();
 
+
+    public class MyEvent extends Event{
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        Player player;
+
+        public MyEvent(Player player){
+
+            this.player = player;
+        }
+        public HandlerList getHandlers() {
+            return null;
+        }
+    }
     @Override
     public void onEnable() {
         super.onEnable();
@@ -54,11 +74,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
             public void run() {
 
-                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
-                    player.sendMessage("on dirt");
-                    Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
-                    player.setVelocity(c);
-                }
+                Bukkit.getPluginManager().callEvent(new MyEvent(player));
             }
         }.runTaskTimer(this, 0, 1);
 
@@ -96,7 +112,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     }//End of playerFastFall
 
     @EventHandler
-    public void playerBounce(PlayerVelocityEvent event) {
+    public void playerBounce(MyEvent event) {
         Player player = event.getPlayer();
 
         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
