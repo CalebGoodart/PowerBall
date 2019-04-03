@@ -54,12 +54,12 @@ public class PowerBall extends JavaPlugin implements Listener {
         final Player player = event.getPlayer();
 
         event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
-
+/*
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
 
-                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT /*&& player.getVelocity().getY() > .6 */) {
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6 ) {
                     player.sendMessage("on dirt");
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
@@ -68,7 +68,7 @@ public class PowerBall extends JavaPlugin implements Listener {
             }
         }, 0L, 5);
 
-
+*/
     }//Ends onPlayerJoin
 
     @EventHandler
@@ -102,10 +102,10 @@ public class PowerBall extends JavaPlugin implements Listener {
     }//End of playerFastFall
 
     @EventHandler
-    public void playerBounce(PlayerInteractEvent event) {
+    public void playerBounce(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
-
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
+        player.sendMessage(player.getVelocity().toString());
+        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT /*&& player.getVelocity().getY() > .6 */) {
             player.sendMessage("on dirt");
             Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
             player.setVelocity(c);
