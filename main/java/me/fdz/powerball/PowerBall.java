@@ -84,6 +84,15 @@ public class PowerBall extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         PlayerMoveEvent a = event;
 
+
+        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT){
+
+            player.sendMessage("on dirt");
+        }
+
+
+
+
         if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
             Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
             player.setVelocity(c);
@@ -109,32 +118,34 @@ public class PowerBall extends JavaPlugin implements Listener {
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if (!(playersOnDashCoolDown.contains(player)) && !(player.isOnGround()) && (event.getAction() == Action.LEFT_CLICK_AIR) && (player.getInventory().getItemInMainHand().getType() == Material.ARROW) && config.getBoolean("PlayerDash")) {
 
-            Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3,
-                    player.getLocation().getDirection().getY(),
-                    player.getLocation().getDirection().getZ() * 3);
-            player.setVelocity(dashSpeed);
-            playersOnDashCoolDown.add(player);
+        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.getMaterial("snowball")){
 
-            coolDown(player, 3);
+            if (playersOnDashCoolDown.contains(player)){
 
-        } else {
+                player.sendMessage("On CoolDown!");
 
-            player.sendMessage("On CoolDown!");
+            }else {
+
+                Vector dashSpeed = new Vector(player.getLocation().getDirection().getX() * 3,
+                        player.getLocation().getDirection().getY(),
+                        player.getLocation().getDirection().getZ() * 3);
+                player.setVelocity(dashSpeed);
+                playersOnDashCoolDown.add(player);
+
+                new BukkitRunnable(){
+                    public void run() {
+                        playersOnDashCoolDown.remove(player);
+                    }
+                }.runTaskLater(this, 3);
+
+            }
+
         }
     }
 
+
     private ArrayList<Player> playersOnDashCoolDown = new ArrayList<Player>();
-
-    private void coolDown(final Player player, int seconds) {
-
-        this.getServer().getScheduler().runTaskLater(this, new Runnable() {
-            public void run() {
-                playersOnDashCoolDown.remove(player);
-            }
-        }, seconds * 20L);
-    }
 
 
     @EventHandler
