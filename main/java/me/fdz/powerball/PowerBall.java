@@ -54,21 +54,21 @@ public class PowerBall extends JavaPlugin implements Listener {
         final Player player = event.getPlayer();
 
         event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
-/*
+
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
-
-                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6 ) {
+                player.sendMessage(player.getVelocity().toString());
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT ) {
                     player.sendMessage("on dirt");
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
 
             }
-        }, 0L, 5);
+        }, 0L, 1);
 
-*/
+
     }//Ends onPlayerJoin
 
     @EventHandler
