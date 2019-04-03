@@ -66,7 +66,7 @@ public class PowerBall extends JavaPlugin implements Listener {
                 }
 
             }
-        }, 0L, 1);
+        }, 0L, 5);
 
 
     }//Ends onPlayerJoin
@@ -87,7 +87,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerLaunch(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
 
-        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && config.getBoolean("PlayerLaunch")) {
+        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK) && config.getBoolean("PlayerLaunch")) {
             player.setVelocity(new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ()));
         }
     }//End of playerLaunch
@@ -105,8 +105,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerBounce(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
         player.sendMessage(player.getVelocity().toString());
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT /*&& player.getVelocity().getY() > .6 */) {
-            player.sendMessage("on dirt");
+        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK /*&& player.getVelocity().getY() > .6 */) {
             Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
             player.setVelocity(c);
         }
@@ -138,7 +137,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerDash(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.ARROW) {
+        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.SNOWBALL) {
 
             if (playersOnDashCoolDown.contains(player)) {
 

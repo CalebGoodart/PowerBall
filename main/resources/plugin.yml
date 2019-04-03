@@ -1,6 +1,7 @@
 name: PowerBall
 version: 1.0.0
 main: me.fdz.powerball.PowerBall
+api-version: 1.13
 
 commands:
    startgame:
