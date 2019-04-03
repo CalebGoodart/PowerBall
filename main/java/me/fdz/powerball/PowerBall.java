@@ -58,15 +58,15 @@ public class PowerBall extends JavaPlugin implements Listener {
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
-                player.sendMessage(player.getVelocity().toString());
-                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT ) {
-                    player.sendMessage("on dirt");
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK
+                        && player.getVelocity().getY() < -.8 ) {
+
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
 
             }
-        }, 0L, 5);
+        }, 0L, 1);
 
 
     }//Ends onPlayerJoin
@@ -100,38 +100,6 @@ public class PowerBall extends JavaPlugin implements Listener {
             player.setVelocity(new Vector(player.getVelocity().getX(), -5, player.getVelocity().getZ()));
         }
     }//End of playerFastFall
-
-    @EventHandler
-    public void playerBounce(PlayerVelocityEvent event) {
-        Player player = event.getPlayer();
-        player.sendMessage(player.getVelocity().toString());
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK /*&& player.getVelocity().getY() > .6 */) {
-            Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
-            player.setVelocity(c);
-        }
-
-
-
-/*
-        if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
-
-        }
-
-
-        player.sendMessage("moved");
-        getServer().getScheduler().runTaskLater(this, new Runnable() {
-            public void run() {
-                if (!(config.getBoolean("VelocityTracking"))) {
-                    player.sendMessage(String.valueOf((player.getVelocity())));
-                }
-
-
-            }
-        }, 5L);
-        */
-
-
-    }// End of playerBounce
 
     @EventHandler
     public void playerDash(PlayerInteractEvent event) {
