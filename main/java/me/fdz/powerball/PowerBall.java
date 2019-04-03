@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerLaunch(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
 
-        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && config.getBoolean("PlayerLaunch")) {
+        if (player.isSneaking() && player.isOnGround() && (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && config.getBoolean("PlayerLaunch")) {
             player.setVelocity(new Vector(player.getVelocity().getX(), 5, player.getVelocity().getZ()));
         }
     }//End of playerLaunch
@@ -83,13 +84,14 @@ public class PowerBall extends JavaPlugin implements Listener {
         final Player player = event.getPlayer();
         final PlayerMoveEvent a = event;
 
+        player.sendMessage("moved");
         getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
                 if (!(config.getBoolean("VelocityTracking"))) {
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
 
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
+                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
@@ -108,19 +110,12 @@ public class PowerBall extends JavaPlugin implements Listener {
             player.setVelocity(dashSpeed);
             playersOnDashCoolDown.add(player);
 
-            this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                int counter = 3;
+            new BukkitRunnable(){
 
                 public void run() {
-                    if (counter < 1) {
-                        playersOnDashCoolDown.remove(player);
-
-                    }else{
-                        player.sendMessage(counter + " Seconds left");
-                        counter--;
-                    }
+                    playersOnDashCoolDown.remove(player);
                 }
-            }, 3 * 20L);
+            }.runTaskLater(this, 3 * 20);
 
         } else {
 
@@ -155,22 +150,23 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     public void StartGame() {
 
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+
+        new BukkitRunnable(){
 
             int counter = 10;
-
             public void run() {
 
                 if (counter <= 0){
 
-                    getServer().broadcastMessage("Game starting");
-                    return;
+                    getServer().broadcastMessage("starting game");
+                    this.cancel();
 
                 }
                 getServer().broadcastMessage(counter + " Seconds left!");
                 counter--;
-            }
-        }, 0L, 20L);
+            };
+
+        }.runTaskTimer(this, 0, 20);
 
         this.getServer().broadcastMessage("Game is staring!");
 
