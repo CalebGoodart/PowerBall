@@ -18,6 +18,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.UUID;
 
 public class PowerBall extends JavaPlugin implements Listener {
 
@@ -80,9 +82,8 @@ public class PowerBall extends JavaPlugin implements Listener {
     }//End of playerFastFall
 
     @EventHandler
-    public void playerBounce(PlayerEvent event) {
+    public void playerBounce(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
-
 
         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
             player.sendMessage("on dirt");
@@ -130,11 +131,11 @@ public class PowerBall extends JavaPlugin implements Listener {
                         player.getLocation().getDirection().getY(),
                         player.getLocation().getDirection().getZ() * 3);
                 player.setVelocity(dashSpeed);
-                playersOnDashCoolDown.add(player);
+                playersOnDashCoolDown.put(player.getUniqueId(), player);
 
                 new BukkitRunnable(){
                     public void run() {
-                        playersOnDashCoolDown.remove(player);
+                        playersOnDashCoolDown.remove(player.getUniqueId());
                     }
                 }.runTaskLater(this, 3);
 
@@ -143,9 +144,7 @@ public class PowerBall extends JavaPlugin implements Listener {
         }
     }
 
-
-    private ArrayList<Player> playersOnDashCoolDown = new ArrayList<Player>();
-
+    private Hashtable <UUID, Player> playersOnDashCoolDown = new Hashtable<UUID, Player>();
 
     @EventHandler
     public void onPlayerSquat(PlayerToggleSneakEvent event) {
@@ -184,7 +183,14 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         //spawn player and give flash
 
-        //
+        giveKit();
+
+        // wait for win condition
+
+    }
+
+    public void giveKit(){
+
 
     }
 
