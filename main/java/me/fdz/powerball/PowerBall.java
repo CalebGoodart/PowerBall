@@ -58,14 +58,15 @@ public class PowerBall extends JavaPlugin implements Listener {
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
+                
                 if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
                     player.sendMessage("on dirt");
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
                 }
-                
+
             }
-        }, 0, 1);
+        }, 0L, 5);
 
 
     }//Ends onPlayerJoin
@@ -155,7 +156,7 @@ public class PowerBall extends JavaPlugin implements Listener {
                     public void run() {
                         playersOnDashCoolDown.remove(player.getUniqueId());
                     }
-                }.runTaskLater(this, 3);
+                }.runTaskLater(this, 3 * 20L);
 
             }
 
