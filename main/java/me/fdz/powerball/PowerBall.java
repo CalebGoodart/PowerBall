@@ -46,9 +46,23 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
+
+        new BukkitRunnable(){
+
+            public void run() {
+
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6){
+                    player.sendMessage("on dirt");
+                    Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
+                    player.setVelocity(c);
+                }
+            }
+        }.runTaskTimer(this, 0, 1);
+
+
     }//Ends onPlayerJoin
 
     @EventHandler
@@ -119,7 +133,7 @@ public class PowerBall extends JavaPlugin implements Listener {
     public void playerDash(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.getMaterial("snowball")){
+        if (event.getAction() == Action.LEFT_CLICK_AIR && player.getInventory().getItemInMainHand().getType() == Material.getMaterial("SNOWBALL")){
 
             if (playersOnDashCoolDown.contains(player)){
 
