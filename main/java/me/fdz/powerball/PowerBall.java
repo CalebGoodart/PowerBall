@@ -58,8 +58,8 @@ public class PowerBall extends JavaPlugin implements Listener {
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
-                
-                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT && player.getVelocity().getY() > .6) {
+
+                if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT /*&& player.getVelocity().getY() > .6 */) {
                     player.sendMessage("on dirt");
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
