@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -187,17 +188,16 @@ public class PowerBall extends JavaPlugin implements Listener {
             ItemStack itemStack = new ItemStack(Material.SPLASH_POTION, 2);
             PotionMeta potionMeta = (PotionMeta)itemStack.getItemMeta();
             PotionEffect potionEffect = new PotionEffect(PotionEffectType.SPEED, 10,10, true, true);
-            potionMeta.addCustomEffect(potionEffect, true);
             itemStack.setItemMeta(potionMeta);
             player.getInventory().addItem(itemStack);
         }
 
     }
 
-    public void snowBallHit(ProjectileHitEvent event) {
+    public void snowBallHit(ProjectileLaunchEvent event) {
 
         this.getServer().broadcastMessage("HIT");
-        event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.getHitEntity().getName());
+        event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.toString());
     }
 
     public class startGame implements CommandExecutor {
