@@ -15,8 +15,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -178,22 +183,28 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     public void giveKit() {
 
+        for (Player player : this.getServer().getOnlinePlayers()){
+
+            PotionData pot = new PotionData(PotionType.SPEED,true,true);
+            ItemStack stack = new ItemStack(Material.SPLASH_POTION);
+            player.getInventory().setItem(9, stack);
+        }
 
     }
 
     public void snowBallHit(EntityDamageByEntityEvent event) {
 
-        event.getEntity().sendMessage("HIT");
-        event.getDamager().sendMessage("Hitted");
+        this.getServer().broadcastMessage("HIT");
+        event.getEntity().sendMessage(event.getDamager().getName() + " " + event.getEntityType().name());
     }
 
     public class startGame implements CommandExecutor {
 
 
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            if (sender instanceof Player) {
+
                 StartGame();
-            }
+
 
             // If the player (or console) uses our command correct, we can return true
             return true;
