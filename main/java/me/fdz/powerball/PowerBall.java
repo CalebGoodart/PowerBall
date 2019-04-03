@@ -81,9 +81,15 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     @EventHandler
     public void playerBounce(PlayerMoveEvent event) {
-        final Player player = event.getPlayer();
-        final PlayerMoveEvent a = event;
+        Player player = event.getPlayer();
+        PlayerMoveEvent a = event;
 
+        if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIRT) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
+            Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
+            player.setVelocity(c);
+        }
+
+        /*
         player.sendMessage("moved");
         getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
@@ -91,12 +97,13 @@ public class PowerBall extends JavaPlugin implements Listener {
                     player.sendMessage(String.valueOf((player.getVelocity())));
                 }
 
-                if ((player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM) && (a.getFrom().getY() - a.getTo().getY() > .6) && config.getBoolean("PlayerBounce")) {
-                    Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
-                    player.setVelocity(c);
-                }
+
             }
         }, 5L);
+        */
+
+
+
     }// End of playerBounce
 
     @EventHandler
@@ -110,12 +117,7 @@ public class PowerBall extends JavaPlugin implements Listener {
             player.setVelocity(dashSpeed);
             playersOnDashCoolDown.add(player);
 
-            new BukkitRunnable(){
-
-                public void run() {
-                    playersOnDashCoolDown.remove(player);
-                }
-            }.runTaskLater(this, 3 * 20);
+            coolDown(player, 3);
 
         } else {
 
@@ -161,11 +163,11 @@ public class PowerBall extends JavaPlugin implements Listener {
                     getServer().broadcastMessage("starting game");
                     this.cancel();
 
+                }else {
+                    getServer().broadcastMessage(counter + " Seconds left!");
+                    counter--;
                 }
-                getServer().broadcastMessage(counter + " Seconds left!");
-                counter--;
-            };
-
+            }
         }.runTaskTimer(this, 0, 20);
 
         this.getServer().broadcastMessage("Game is staring!");
