@@ -71,7 +71,7 @@ public class PowerBall extends JavaPlugin implements Listener {
                 }
 
             }
-        }, 0L, 5);
+        }, 0L, 1);
 
 
     }//Ends onPlayerJoin
@@ -187,15 +187,16 @@ public class PowerBall extends JavaPlugin implements Listener {
 
             ItemStack p = new ItemStack(Material.SPLASH_POTION, 1);
             PotionMeta m = (PotionMeta) p.getItemMeta();
-            m.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 60, 2), true); //60 second duration, level 3, and true just overwrites an existing effect with whatever level/duration you give it
+            m.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 128 * 20, 10), true); //60 second duration, level 3, and true just overwrites an existing effect with whatever level/duration you give it
             p.setItemMeta(m);
             player.getInventory().addItem(p);
         }
 
     }
 
-    public void snowBallHit(ProjectileLaunchEvent event) {
+    public void snowBallHit(EntityDamageByEntityEvent event) {
 
+        event.setDamage(10);
         this.getServer().broadcastMessage("HIT");
         event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.toString());
     }
