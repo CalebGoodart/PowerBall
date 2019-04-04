@@ -64,7 +64,7 @@ public class PowerBall extends JavaPlugin implements Listener {
             public void run() {
 
                 if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.BROWN_MUSHROOM_BLOCK
-                        && player.getVelocity().getY() < -.1) {
+                        && player.getVelocity().getY() < 0) {
 
                     Vector c = new Vector(player.getVelocity().getX(), 3, player.getVelocity().getZ());
                     player.setVelocity(c);
@@ -183,13 +183,13 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     public void giveKit() {
 
-        for (Player player : this.getServer().getOnlinePlayers()){
+        for (Player player : this.getServer().getOnlinePlayers()) {
 
-            ItemStack itemStack = new ItemStack(Material.SPLASH_POTION, 2);
-            PotionMeta potionMeta = (PotionMeta)itemStack.getItemMeta();
-            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SPEED, 10,10, true, true);
-            itemStack.setItemMeta(potionMeta);
-            player.getInventory().addItem(itemStack);
+            ItemStack p = new ItemStack(Material.SPLASH_POTION, 1);
+            PotionMeta m = (PotionMeta) p.getItemMeta();
+            m.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 60, 2), true); //60 second duration, level 3, and true just overwrites an existing effect with whatever level/duration you give it
+            p.setItemMeta(m);
+            player.getInventory().addItem(p);
         }
 
     }
@@ -205,7 +205,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-                StartGame();
+            StartGame();
 
 
             // If the player (or console) uses our command correct, we can return true
