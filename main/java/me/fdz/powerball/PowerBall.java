@@ -195,10 +195,12 @@ public class PowerBall extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void snowBallHit(ProjectileHitEvent event) {
+    public void snowBallHit(EntityDamageByEntityEvent event) {
 
-        event.getHitEntity();
-        this.getServer().broadcastMessage(event.getHitBlock().toString());
+        event.getDamager().sendMessage("this");
+        event.getEntity().sendMessage("hello");
+        this.getServer().broadcastMessage(event.getCause().toString());
+        event.setDamage(10);
         this.getServer().broadcastMessage("HIT");
         event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.toString());
     }
