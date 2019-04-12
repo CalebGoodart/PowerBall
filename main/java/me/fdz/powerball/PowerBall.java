@@ -194,6 +194,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
     }
 
+    @EventHandler
     public void snowBallHit(EntityDamageByEntityEvent event) {
 
         event.setDamage(10);
