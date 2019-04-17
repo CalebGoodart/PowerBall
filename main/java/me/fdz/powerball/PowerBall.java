@@ -1,6 +1,6 @@
 package me.fdz.powerball;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
@@ -8,31 +8,33 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.UUID;
-import java.util.logging.Handler;
 
-public class PowerBall extends JavaPlugin implements Listener {
+public class PowerBall extends JavaPlugin implements Listener{
 
     private FileConfiguration config = getConfig();
+    private Hashtable <UUID, Integer> playerKills = new Hashtable<UUID, Integer>();
+    private Hashtable<UUID, Player> playersOnDashCoolDown = new Hashtable<UUID, Player>();
+    private boolean gameRunning = false;
 
 
     @Override
@@ -60,6 +62,7 @@ public class PowerBall extends JavaPlugin implements Listener {
 
         event.setJoinMessage("Welcome, " + player.getName() + "to Server2!");
 
+        //makes the player boucne
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
 
@@ -75,18 +78,6 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
     }//Ends onPlayerJoin
-
-    @EventHandler
-    public void onPlayerSneaking(PlayerToggleSneakEvent event) {
-        Player player = event.getPlayer();
-
-        if (!((config.getBoolean("TrackSneaking"))) && (player.isSneaking())) {
-            player.sendMessage("You are Sneaking");
-        }
-        if (!(config.getBoolean("VelocityTracking")) && (player.isSneaking())) {
-            player.sendMessage(String.valueOf((player.getVelocity())));
-        }
-    }//Ends onPlayerSneaking
 
     @EventHandler
     public void playerLaunch(PlayerToggleSneakEvent event) {
@@ -135,10 +126,8 @@ public class PowerBall extends JavaPlugin implements Listener {
         }
     }
 
-    private Hashtable<UUID, Player> playersOnDashCoolDown = new Hashtable<UUID, Player>();
-
     @EventHandler
-    public void onPlayerSquat(PlayerToggleSneakEvent event) {
+    public void fart(PlayerToggleSneakEvent event) {
 
         Player player = event.getPlayer();
         //player.sendMessage("Code executed");
@@ -151,78 +140,108 @@ public class PowerBall extends JavaPlugin implements Listener {
 
 
     public void StartGame() {
+        gameRunning = true;
 
+        int counter = 10;
+        long temp = System.currentTimeMillis();
 
-        new BukkitRunnable() {
+        while (counter > 0){
 
-            int counter = 10;
-
-            public void run() {
-
-                if (counter <= 0) {
-
-                    getServer().broadcastMessage("starting game");
-                    this.cancel();
-
-                } else {
-                    getServer().broadcastMessage(counter + " Seconds left!");
-                    counter--;
-                }
+            if (System.currentTimeMillis() - temp == 1000){
+                temp = System.currentTimeMillis();
+                getServer().broadcastMessage(counter + " Seconds left!");
+                counter--;
             }
-        }.runTaskTimer(this, 0, 20);
+        }
 
         this.getServer().broadcastMessage("Game is staring!");
 
         //spawn player and give flash
 
-        giveKit();
+        for (Player player : this.getServer().getOnlinePlayers()){
 
-        // wait for win condition
+            spawn(player);
 
+        }
     }
 
-    public void giveKit() {
-
-        for (Player player : this.getServer().getOnlinePlayers()) {
-
-            ItemStack p = new ItemStack(Material.SPLASH_POTION, 1);
-            PotionMeta m = (PotionMeta) p.getItemMeta();
-            m.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 128 * 20, 10), true); //60 second duration, level 3, and true just overwrites an existing effect with whatever level/duration you give it
-            p.setItemMeta(m);
-            player.getInventory().addItem(p);
-        }
-
+    public void giveKit(Player player) {
+        ItemStack p = new ItemStack(Material.SPLASH_POTION, 2);
+        PotionMeta m = (PotionMeta) p.getItemMeta();
+        m.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1000 * 128, 10), true);
+        p.setItemMeta(m);
+        player.getInventory().setItem(1, p);
     }
 
     @EventHandler
-    public void snowBallHit(EntityDamageByEntityEvent event) {
+    public void snowBallHit(ProjectileHitEvent event) {
 
-        event.getDamager().sendMessage("this");
-        event.getEntity().sendMessage("hello");
-        this.getServer().broadcastMessage(event.getCause().toString());
-        event.setDamage(10);
-        this.getServer().broadcastMessage("HIT");
-        event.getEntity().sendMessage(event.getEntity().getName() + " " + event.getEntityType().name() + event.toString());
+        if (event.getEntity() instanceof Snowball && gameRunning){
+            if (event.getEntity().getShooter() instanceof Player){
+                if (event.getHitEntity() != null) {
+                    Player killer = ((Player) event.getEntity().getShooter()).getPlayer();
+                    Entity killed = event.getHitEntity();
+
+                    if (playerKills.get(killer.getUniqueId()) == null){
+                        playerKills.put(killer.getUniqueId(), 0);
+                    }
+                    playerKills.put(killer.getUniqueId(), playerKills.get(killer.getUniqueId()) + 1);
+                    killer.sendMessage("Killed " + killed.getName());
+                    if (playerKills.get(killer.getUniqueId()) == 10) {
+                        endGame(killer);
+                    }
+                    if (killed instanceof Player) {
+                        spawn((Player) killed);
+                    } else {
+                        killed.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    public void spawn(Player player){
+        if (player == null) return;
+        player.getInventory().clear();
+        player.getInventory().setItem(0, new ItemStack(Material.SNOWBALL, 64));
+        giveKit(player);
+        player.teleport(new Location(player.getWorld(), 0, 100 ,0));
+    }
+
+    @EventHandler
+    public void falldamage(EntityDamageEvent event){
+
+        if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
+            event.setCancelled(true);
+        }
+    }
+
+    public void endGame(Player winner){
+
+        playerKills.clear();
+        this.getServer().broadcastMessage(winner.getDisplayName() + " Has won!");
+
+        for (Player player : this.getServer().getOnlinePlayers()){
+
+            player.getInventory().clear();
+            player.teleport(new Location(player.getWorld(), 0, 100, 0));
+        }
+        gameRunning = false;
     }
 
     public class startGame implements CommandExecutor {
 
-
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
             StartGame();
-
-
-            // If the player (or console) uses our command correct, we can return true
             return true;
         }
-
-
     }
-
 
     @Override
     public void onDisable() {
         super.onDisable();
     }//Ends onDisable
 }//Ends PowerBall
+
+
